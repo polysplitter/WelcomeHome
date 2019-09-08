@@ -33,7 +33,7 @@ local options = {
             name = 'Show on Screen',
             desc = 'Toggles the display of the message on the screen',
             get = function()
-                return showOnScreen
+                return sshowOnScreen
             end,
             set = function()
                 showOnScreen = not showOnScreen
@@ -45,13 +45,19 @@ local options = {
 WelcomeHome = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceEvent-2.0")
 WelcomeHome:RegisterChatCommand({"/welcomehome", "/wh"}, options)
 
+local function isEmpty(value)
+    return value == nil or value == ''
+end
+
 function WelcomeHome:OnInitialize()
     -- Called when the addon is loaded
 end
 
 function WelcomeHome:OnEnable()
     -- Called when the addon is enabled
-    self:Print("zones " .. GetRealZoneText() .. " " .. GetSubZoneText())
+    if not isEmpty(GetRealZoneText()) or not isEmpty(GetSubZoneText()) then
+        self:Print("zones " .. GetRealZoneText() .. " " .. GetSubZoneText())
+    end
     self:RegisterEvent("ZONE_CHANGED")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 end
