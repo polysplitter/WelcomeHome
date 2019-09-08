@@ -8,7 +8,9 @@ local options = {
             name = 'msg',
             desc = 'The message text to be displayed',
             usage = '<Your message here>',
-            get = 'GetMessage',
+            get = function()
+                return message
+            end,
             set = function(value)
                 message = value
             end,
@@ -25,9 +27,9 @@ end
 
 function WelcomeHome:OnEnable()
     -- Called when the addon is enabled
-    self:Print("Enabled: Hello World!")
     self:Print("zones " .. GetRealZoneText() .. " " .. GetSubZoneText())
     self:RegisterEvent("ZONE_CHANGED")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 end
 
 function WelcomeHome:ZONE_CHANGED()
@@ -38,14 +40,14 @@ function WelcomeHome:ZONE_CHANGED()
     end
 end
 
-function WelcomeHome:GetMessage() 
-    return message
+function WelcomeHome:ZONE_CHANGED_NEW_AREA()
+    self:Print("You have changed zones! " .. UnitName('player') .. " " .. GetSubZoneText())
+    self:Print("Your bind location is: " .. GetBindLocation())
+    if GetBindLocation() == GetRealZoneText() then
+        self:Print(message)
+    end
 end
-
--- function WelcomeHome.SetMessage(newValue)
---     WelcomeHome.message = newValue
--- end
-
+ 
 function WelcomeHome:OnDisable()
     -- Called when the addon is disabled
     self:Print("Disabled: Bye World!")
